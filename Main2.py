@@ -65,7 +65,7 @@ def checke_werte():#adresse, aktion):
     werte3b = bus.read_byte_data(0x22, 0x13)
     werte4b = bus.read_byte_data(0x24, 0x13)
     werte5b = bus.read_byte_data(0x20, 0x13)
-        
+    lese_gpios_aus()    
     print("stein1a:", hex(werte1a),"stein2a:", hex(werte2a),"stein3a:", hex(werte3a),"stein4a:", hex(werte4a),"stein5a:", hex(werte5a))
     print("stein1b:", hex(werte1b),"stein2b:", hex(werte2b),"stein3b:", hex(werte3b),"stein4b:", hex(werte5b),"stein5b:", hex(werte5b))
     
@@ -78,6 +78,14 @@ def setze_pi_pins_zurueck():
         gpio.setup(pin, gpio.IN, pull_up_down = gpio.PUD_UP) 
         #gpio.output(pin, gpio.LOW)
 
+def lese_gpios_aus():
+    liste = []
+    l = []
+    for pin in range(20):
+        liste.append(gpio.input(config.GPIOS[pin]))
+        l.append(config.GPIOS[pin])
+        #print(config.GPIOS[pin],gpio.input(config.GPIOS[pin]))
+    print(l,liste)   
 def setze_pullup_und_output():
     for stein in config.ADRESSEN_STEINE.values():
         bus.write_byte_data(stein, config.AKTION.get("GPPUA"), 0xFF)
