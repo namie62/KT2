@@ -8,7 +8,7 @@ from pprint import pprint
 
 def setup():
     # Instanz von SMbus anlegen, ist nur einmal notwendig
-    litzenzahl = 4
+    litzenzahl = 50
     bus = smbus.SMBus(1)
     gpio.setmode(gpio.BCM)
     gpio.setwarnings(False)
@@ -48,8 +48,7 @@ def setze_pin_auf_low(adresse, aktion, pin):
         bus.write_byte_data(config.ADRESSEN_STEINE.get(adresse),config.AKTION.get("OUTB"), config.PINNUMMERN.get(pin))
     else:
         pi_gpio_setup_as_out_and_low(int(pin))
-    #sleep(0.5)
-
+ 
 def string_zu_befehl(string):
     adresse = string[:1]
     aktion = string[1:2]
@@ -58,6 +57,7 @@ def string_zu_befehl(string):
 
 def checke_auf_durchgang(i):
     erstelle_dic(i) # erstellt einmal das Dictionary, indem alle pins die low sind aufgeführt werden
+    rpi_toggle = False 
     for stein in config.ADRESSEN_STEINE:
         adresse = config.ADRESSEN_STEINE[stein] # holt sich adresse des jeweiligen steins
         wertea = lese_werte(stein, adresse , "A") #Werte von jedem stein von reihe a
@@ -71,17 +71,17 @@ def checke_auf_durchgang(i):
                 
         for pin in low_pinsa: # Um jeden der Low pins den passenden String packen und ins Dictionary abspeichern
             a = str(stein) + "A" + str(pin)
-            packe_low_pins_in_dic(i, a)
+            packe_low_pins_in_dic(i, a, rpi_toggle)
         for pin in low_pinsb:
             b = str(stein) + "B" + str(pin)
-            packe_low_pins_in_dic(i, b)
-            
+            packe_low_pins_in_dic(i, b, rpi_toggle )
+    
+    rpi_toggle = True
     gpio_liste = lese_gpios_aus() #hier gpio low pins finden und ebenfalls in liste packen
-        
     low_gpio_index = ermittle_low_gpio_index(gpio_liste)
     for gpio in low_gpio_index:
         c = "r" + "p" + str(config.GPIOS[gpio])
-        packe_low_pins_in_dic(i,c)
+        packe_low_pins_in_dic(i,c, rpi_toggle)
 
 def ermittle_low_gpio_index(gpio_liste):
     wdh = len(gpio_liste)
@@ -123,8 +123,11 @@ def ermittle_low_pins_aus_bin(bin_reihe_a):#, bin_reihe_b, stein, i):
 def erstelle_dic(i):
         config.VERGLEICH_PINS[i+1] = []
     
-def packe_low_pins_in_dic(i, low_pin):
-    config.VERGLEICH_PINS[i+1].append(low_pin) 
+def packe_low_pins_in_dic(i, low_pin, rpi_toggle):
+    if rpi_toggle:
+        config.VERGLEICH_PINS[i+1].insert(0, low_pin)
+    else: 
+        config.VERGLEICH_PINS[i+1].append(low_pin) 
         
 def pi_gpio_setup_as_out_and_low(pin):
     gpio.setup(pin, gpio.OUT) 
@@ -169,11 +172,11 @@ def iteration(litzenzahl):
                 pinnummer = 1
                 pinnummerb = 0
                 string = str(steinnummer) + "A" + str(pinnummer)
-        else: # steinnummer = 4
+        else: # steinnummer = 3
             if pinnummer <= 7:
                 pinnummer +=1
                 string = str(steinnummer) + "A" + str(pinnummer)
-            elif pinnummerb < 6: # muss nur bis Pin2 gehen und dann auf Pi switchen
+            elif pinnummerb < 6: # muss nur bis Pin6 gehen und dann auf Pi switchen
                 pinnummerb +=1
                 string = str(steinnummer) + "B" + str(pinnummerb)   
             else: # switche auf Pi
@@ -183,32 +186,44 @@ def iteration(litzenzahl):
                 else:
                     break
         adresse, aktion, pin = string_zu_befehl(string)
-        #print(adresse, aktion, pin)
         setze_pin_auf_low(adresse, aktion, pin)
         checke_auf_durchgang(i)
-    
-def vergleiche_soll_ist():
-    for i in range(litzenzahl):
-        anzahl_verbundener_pins = len(config.VERGLEICH_PINS[i+1])
+        
+def ermittle_fehlende_verbindung(i):
+    print(config.ABSCHLUSSMELDUNGEN.get(4)+ config.VERGLEICH_PINS[i+1][0])
+            
+def ueberpruefe_verdrahtung(i):
+    if config.VERGLEICH_PINS[i+1][0] != config.OUTPUTS[i+1]:
+        print(config.ABSCHLUSSMELDUNGEN.get(2))
+    elif config.VERGLEICH_PINS[i+1][0] != config.OUTPUTS[i+1]:
+        print(config.ABSCHLUSSMELDUNGEN.get(2))
+    elif config.VERGLEICH_PINS[i+1][1] != config.INPUTS[i+1]:
+        print(config.ABSCHLUSSMELDUNGEN.get(1) + config.OUTPUTS[i+1] + "->" + config.INPUTS[i+1] + "/" +config.OUTPUTS[i+1] + "->" + config.VERGLEICH_PINS[i+1][1] )
+    else: pass
+
+def ermittle_querschluss(i, anzahl_verbundener_pins):
+    querschluss_liste = []
+    if config.VERGLEICH_PINS[i+1][0] != config.OUTPUTS[i+1]:
+            print(config.ABSCHLUSSMELDUNGEN.get(2))
+    else:
         for j in range(anzahl_verbundener_pins):
-            if anzahl_verbundener_pins == 1:
-                print(config.ABSCHLUSSMELDUNGEN.get(4))
-            elif anzahl_verbundener_pins == 2: # zwei verbundene Pins, also korrekt, muss aber geprüft werden auf falsche Verdrahtung
-                if config.VERGLEICH_PINS[i+1][j] != config.INPUTS[i+1]:
-                    #print(config.INPUTS[i+1])
-                    #print(config.VERGLEICH_PINS[i+1][j])
-                    print(config.ABSCHLUSSMELDUNGEN.get(1))
-                elif config.VERGLEICH_PINS[i+1][j] != config.OUTPUTS[i+1]:
-                    print(config.ABSCHLUSSMELDUNGEN.get(3))
-            elif anzahl_verbundener_pins > 2:
-                # mehr als zwei verbundene Pins -> Querschluss
-                # überprüfen dann wo oder so 
-               # if config.VERGLEICH_PINS[i+1][j] != config.INPUTS[i+1]:
-                   # print(config.INPUTS[i+1])
-                   # print(config.VERGLEICH_PINS[i+1][j])  
-                print(config.ABSCHLUSSMELDUNGEN.get(2))
-            else:
-                print(config.ABSCHLUSSMELDUNGEN.get(4))
+            querschluss_liste.append(config.VERGLEICH_PINS[i+1][j])
+        print(config.ABSCHLUSSMELDUNGEN.get(5)+config.OUTPUTS[i+1] + "->" + config.INPUTS[i+1] +"/" + config.OUTPUTS[i+1] + "->" )
+        for k in range(len(querschluss_liste)):
+            if k > 0:
+                print(querschluss_liste[k])
+            
+def vergleiche_soll_ist():
+    for i in range(litzenzahl): 
+        anzahl_verbundener_pins = len(config.VERGLEICH_PINS[i+1])
+        if anzahl_verbundener_pins == 0:
+            config.ABSCHLUSSMELDUNGEN.get(3)
+        if anzahl_verbundener_pins == 1: # Nur der gesetzte Pin ist high -> keine 
+            ermittle_fehlende_verbindung(i)
+        elif anzahl_verbundener_pins == 2: # zwei verbundene Pins, also korrekt, muss aber geprüft werden auf falsche Verdrahtung
+            ueberpruefe_verdrahtung(i)
+        elif anzahl_verbundener_pins > 2: # mehr als zwei verbundene Pins -> Querschluss
+            ermittle_querschluss(i, anzahl_verbundener_pins) 
     
 bus, litzenzahl = setup()
 # Reihentests funktionieren

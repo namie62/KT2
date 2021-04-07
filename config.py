@@ -146,10 +146,11 @@ INPUTS = {
 VERGLEICH_PINS ={}
 
 ABSCHLUSSMELDUNGEN = {
-    1 : "Falsch verdrahtet",
-    2 : "Querschluss",
-    3 : "OUTPUT nicht auf HIGH",
-    4 : "Keine Verbindung",
-    5 : "Alles supi"}
+    1 : "Falsch verdrahtet: richtig/falsch ..",
+    2 : "Interner ERROR: Falscher OUTPUT-Pin, kontaktieren Sie bitte den Service",
+    3 : "Interner ERROR: Kein OUTPUT-Pin, kontaktieren Sie bitte den Service",
+    4 : "Keine Verbindung an Pin: ",
+    5: "Querschluss: richtig/falsch ",
+    6 : "Alles supi"}
     
 
