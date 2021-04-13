@@ -5,9 +5,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Kabel import KABEL
 from pprint import pprint
 import GUI_config
+from pruefprogramm import pruefung
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        self.pruefungsinstanz = pruefung()
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(GUI_config.mainwindowsize[0], GUI_config.mainwindowsize[1])
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -21,12 +24,6 @@ class Ui_MainWindow(object):
         
         self.create_pushButton()
             
-#         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-#         self.pushButton_2.setGeometry(QtCore.QRect(140, 90, 93, 28))
-#         self.pushButton_2.setObjectName("pushButton_2")
-#         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-#         self.pushButton_3.setGeometry(QtCore.QRect(260, 90, 93, 28))
-#         self.pushButton_3.setObjectName("pushButton_3")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
@@ -55,6 +52,7 @@ class Ui_MainWindow(object):
             self.pushButton.setGeometry(QtCore.QRect(posx, posy, GUI_config.buttonsize[0], GUI_config.buttonsize[1]))
             #self.pushButton.setObjectName(list(KABEL)[kabel])
             self.pushButton.setText(name)
+            self.pushButton.clicked.connect(self.starte_pruefung)
             #button_liste.append(self.pushButton)
         #return button_liste
             
@@ -69,3 +67,6 @@ class Ui_MainWindow(object):
         #self.pushButton.setText(_translate("MainWindow", "PushButton"))
         #self.pushButton_2.setText(_translate("MainWindow", "PushButton"))
         #self.pushButton_3.setText(_translate("MainWindow", "PushButton"))
+    def starte_pruefung(self):
+        self.pruefungsinstanz.iteration()
+        self.pruefungsinstanz.vergleiche_soll_ist()
