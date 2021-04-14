@@ -182,11 +182,8 @@ class pruefung():
                 config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(2))
         else:
             for j in range(anzahl_verbundener_pins):
-                querschluss_liste.append(config.VERGLEICH_PINS[i+1][j])
-            config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(5)+config.OUTPUTS[i+1] + "->" + config.INPUTS[i+1] +"/" + config.OUTPUTS[i+1] + "->" )
-            for k in range(len(querschluss_liste)):
-                if k > 0:
-                    print(querschluss_liste[k])
+                config.QUERSCHLUSS_PINS.append(config.VERGLEICH_PINS[i+1][j])
+            config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(5)+ config.OUTPUTS[i+1] + "->" + str(config.QUERSCHLUSS_PINS))
 
     def vergleiche_soll_ist(self, litzenzahl):
         for i in range(litzenzahl): 
