@@ -127,9 +127,8 @@ class pruefung():
             self.bus.write_byte_data(stein, config.AKTION.get("DIRA"), 0xFF)
             self.bus.write_byte_data(stein, config.AKTION.get("DIRB"), 0xFF)
 
-    def iteration(self):
-        self.litzenzahl = 50
-        litzenzahl = self.litzenzahl
+    def iteration(self, litzenzahl):
+        print(litzenzahl)
         steinnummer = 1
         pinnummer = 0
         pinnummerb = 0 
@@ -189,8 +188,7 @@ class pruefung():
                 if k > 0:
                     print(querschluss_liste[k])
 
-    def vergleiche_soll_ist(self):
-        litzenzahl = self.litzenzahl
+    def vergleiche_soll_ist(self, litzenzahl):
         for i in range(litzenzahl): 
             anzahl_verbundener_pins = len(config.VERGLEICH_PINS[i+1])
             if anzahl_verbundener_pins == 0:

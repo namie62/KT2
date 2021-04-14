@@ -42,12 +42,14 @@ class Ui_MainWindow(object):
             if cable >9:
                 posx = (cable-10)*GUI_config.buttonsize[0]
                 posy = GUI_config.mainwindowsize[1]/5  + 2*GUI_config.buttonsize[1]
-            name = list(KABEL)[cable]
+            self.name = list(KABEL)[cable]
             self.pushButton = QtWidgets.QPushButton(self.centralwidget)
             self.pushButton.setGeometry(QtCore.QRect(posx, posy, GUI_config.buttonsize[0], GUI_config.buttonsize[1]))
             #self.pushButton.setObjectName(list(KABEL)[kabel])
-            self.pushButton.setText(name)
-            self.pushButton.clicked.connect(lambda: self.pruefung())
+            self.pushButton.setText(self.name)
+            #print(list(KABEL)[cable])
+            self.pushButton.clicked.connect(lambda checked, name = list(KABEL)[cable]: self.pruefung(name))
+            
             #button_liste.append(self.pushButton)
         #return button_liste
             
@@ -60,8 +62,9 @@ class Ui_MainWindow(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Kabel auswählen:</span></p></body></html>"))
 
-    def pruefung(self):
-        self.pruefungsinstanz.iteration()
-        self.pruefungsinstanz.vergleiche_soll_ist()
-        dialogfenster = ergebnisfenster.create_dialog()
+    def pruefung(self, name):
+        print(name, str(KABEL.get(name)))
+        self.pruefungsinstanz.iteration(KABEL.get(name))
+        self.pruefungsinstanz.vergleiche_soll_ist(KABEL.get(name))
+        dialogfenster = ergebnisfenster.create_dialog(name, KABEL.get(name))
         ergebnisfenster.open_dialog(dialogfenster)
