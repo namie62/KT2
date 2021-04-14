@@ -152,3 +152,5 @@ ABSCHLUSSMELDUNGEN = {
     4 : "Keine Verbindung an Pin: ",
     5: "Querschluss: richtig/falsch ",
     6 : "Alles supi"}
+
+FEHLER = []

@@ -5,25 +5,20 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Kabel import KABEL
 from pprint import pprint
 import GUI_config
-from pruefprogramm import pruefung
-
+import ergebnisfenster
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        self.pruefungsinstanz = pruefung()
+    def setupUi(self, MainWindow, pruefungsinstanz):
+        self.pruefungsinstanz = pruefungsinstanz
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(GUI_config.mainwindowsize[0], GUI_config.mainwindowsize[1])
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         
-    
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
         self.textBrowser.setGeometry(QtCore.QRect(20, 10, 131, 31))
         self.textBrowser.setObjectName("textBrowser")
-        
-        
         self.create_pushButton()
-            
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
@@ -52,7 +47,7 @@ class Ui_MainWindow(object):
             self.pushButton.setGeometry(QtCore.QRect(posx, posy, GUI_config.buttonsize[0], GUI_config.buttonsize[1]))
             #self.pushButton.setObjectName(list(KABEL)[kabel])
             self.pushButton.setText(name)
-            self.pushButton.clicked.connect(self.starte_pruefung)
+            self.pushButton.clicked.connect(lambda: self.pruefung())
             #button_liste.append(self.pushButton)
         #return button_liste
             
@@ -64,9 +59,9 @@ class Ui_MainWindow(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Kabel auswählen:</span></p></body></html>"))
-        #self.pushButton.setText(_translate("MainWindow", "PushButton"))
-        #self.pushButton_2.setText(_translate("MainWindow", "PushButton"))
-        #self.pushButton_3.setText(_translate("MainWindow", "PushButton"))
-    def starte_pruefung(self):
+
+    def pruefung(self):
         self.pruefungsinstanz.iteration()
         self.pruefungsinstanz.vergleiche_soll_ist()
+        dialogfenster = ergebnisfenster.create_dialog()
+        ergebnisfenster.open_dialog(dialogfenster)

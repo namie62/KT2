@@ -4,12 +4,10 @@ from time import sleep
 import config
 from Kabel import KABEL
 import RPi.GPIO as gpio
-from pprint import pprint
 
 class pruefung():
     def __init__(self):
         # Instanz von SMbus anlegen, ist nur einmal notwendig
-        self.litzenzahl = 50
         self.bus = smbus.SMBus(1)
         gpio.setmode(gpio.BCM)
         gpio.setwarnings(False)
@@ -113,7 +111,6 @@ class pruefung():
     def setze_pi_pins_zurueck(self):
         for pin in config.GPIOS:
             gpio.setup(pin, gpio.IN, pull_up_down = gpio.PUD_UP) 
-            #gpio.output(pin, gpio.LOW)
 
     def lese_gpios_aus(self):
         liste = []
@@ -131,6 +128,7 @@ class pruefung():
             self.bus.write_byte_data(stein, config.AKTION.get("DIRB"), 0xFF)
 
     def iteration(self):
+        self.litzenzahl = 50
         litzenzahl = self.litzenzahl
         steinnummer = 1
         pinnummer = 0
@@ -168,44 +166,38 @@ class pruefung():
             self.checke_auf_durchgang(i)
             
     def ermittle_fehlende_verbindung(self, i):
-        print(config.ABSCHLUSSMELDUNGEN.get(4)+ config.VERGLEICH_PINS[i+1][0])
+        config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(4)+ config.VERGLEICH_PINS[i+1][0])
                 
     def ueberpruefe_verdrahtung(self,i):
         if config.VERGLEICH_PINS[i+1][0] != config.OUTPUTS[i+1]:
-            print(config.ABSCHLUSSMELDUNGEN.get(2))
+            config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(2))
         elif config.VERGLEICH_PINS[i+1][0] != config.OUTPUTS[i+1]:
-            print(config.ABSCHLUSSMELDUNGEN.get(2))
+            config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(2))
         elif config.VERGLEICH_PINS[i+1][1] != config.INPUTS[i+1]:
-            print(config.ABSCHLUSSMELDUNGEN.get(1) + config.OUTPUTS[i+1] + "->" + config.INPUTS[i+1] + "/" +config.OUTPUTS[i+1] + "->" + config.VERGLEICH_PINS[i+1][1] )
+            config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(1) + config.OUTPUTS[i+1] + "->" + config.INPUTS[i+1] + "/" +config.OUTPUTS[i+1] + "->" + config.VERGLEICH_PINS[i+1][1] )
         else: pass
 
     def ermittle_querschluss(self,i, anzahl_verbundener_pins):
         querschluss_liste = []
         if config.VERGLEICH_PINS[i+1][0] != config.OUTPUTS[i+1]:
-                print(config.ABSCHLUSSMELDUNGEN.get(2))
+                config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(2))
         else:
             for j in range(anzahl_verbundener_pins):
                 querschluss_liste.append(config.VERGLEICH_PINS[i+1][j])
-            print(config.ABSCHLUSSMELDUNGEN.get(5)+config.OUTPUTS[i+1] + "->" + config.INPUTS[i+1] +"/" + config.OUTPUTS[i+1] + "->" )
+            config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(5)+config.OUTPUTS[i+1] + "->" + config.INPUTS[i+1] +"/" + config.OUTPUTS[i+1] + "->" )
             for k in range(len(querschluss_liste)):
                 if k > 0:
                     print(querschluss_liste[k])
-                
+
     def vergleiche_soll_ist(self):
         litzenzahl = self.litzenzahl
         for i in range(litzenzahl): 
             anzahl_verbundener_pins = len(config.VERGLEICH_PINS[i+1])
             if anzahl_verbundener_pins == 0:
-                config.ABSCHLUSSMELDUNGEN.get(3)
+                config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(3))
             if anzahl_verbundener_pins == 1: # Nur der gesetzte Pin ist high -> keine 
                 self.ermittle_fehlende_verbindung(i)
             elif anzahl_verbundener_pins == 2: # zwei verbundene Pins, also korrekt, muss aber geprüft werden auf falsche Verdrahtung
                 self.ueberpruefe_verdrahtung(i)
             elif anzahl_verbundener_pins > 2: # mehr als zwei verbundene Pins -> Querschluss
-                self.ermittle_querschluss(i, anzahl_verbundener_pins) 
-        
-#     def starte_pruefung(self):
-#         self.iteration()
-#         self.vergleiche_soll_ist()
-    
-   
+                self.ermittle_querschluss(i, anzahl_verbundener_pins)
