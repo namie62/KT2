@@ -1,5 +1,5 @@
+# enthält alle möglichen config Sachen, wie Fehlermeldungen usw.
 # Alle Steinadressen auf Variablen legen (Aufgrund von unpraktischer Hardware-Addressierung sind die nicht in der richtigen Reihenfolge) 
-
 ADRESSEN_STEINE = {
     "1" : 0x21,
     "2" : 0x26,

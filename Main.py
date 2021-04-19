@@ -18,8 +18,9 @@ def open_and_execute_window(app, ui, Hauptfenster, pruefungsinstanz):
     ui.setupUi(Hauptfenster, pruefungsinstanz)
     Hauptfenster.show()
     sys.exit(app.exec_())
-
+    
+# Hier beginnt das Hauptprogramm 
 if __name__ == "__main__":
-    app, ui, Hauptfenster = createWindow()
-    pruefungsinstanz = pruefprogramm.pruefung()
-    open_and_execute_window(app, ui, Hauptfenster, pruefungsinstanz)
+    app, ui, Hauptfenster = createWindow()  #erstellt das Hauptfenster und dessen Instanz
+    pruefungsinstanz = pruefprogramm.pruefung()  #erstellt die Instanz des Prüfprogramms
+    open_and_execute_window(app, ui, Hauptfenster, pruefungsinstanz) #öffnet das Hauptfenster und übergibt die Prüfungsinstanz
