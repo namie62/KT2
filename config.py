@@ -146,7 +146,7 @@ INPUTS = {
 VERGLEICH_PINS ={}
 
 ABSCHLUSSMELDUNGEN = {
-    1 : "Falsch verdrahtet: richtig/falsch ..",
+    1 : "Verdrahtunsfehler: ",
     2 : "Interner ERROR1",
     3 : "Interner ERROR2",
     4 : "Keine Verbindung: ",

@@ -2,10 +2,11 @@
 
 KABEL = {
     "50-pol Kabel" : 50,
+    "8pin Jumperkabel" : 8,
     "Master-Slave Kabel" : 8,
     "4-Pol-Stecker":4 ,
     "5":5,
-    "6" :6,
+    "Deschd der Herzogin" :6,
     "7" : 7,
     "8" :8,
     "9" : 9,

@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 import smbus
 from time import sleep
 import config
@@ -187,7 +187,7 @@ class pruefung():
         if config.VERGLEICH_PINS[i+1][0] != config.OUTPUTS[i+1]: # wenn out nicht mit soll output übereinstimmt
             config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(2))
         elif config.VERGLEICH_PINS[i+1][1] != config.INPUTS[i+1]: # wenn soll nicht mit input übereinstimmt 
-            config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(1) + config.OUTPUTS[i+1] + "->" + config.INPUTS[i+1] + "/" +config.OUTPUTS[i+1] + "->" + config.VERGLEICH_PINS[i+1][1] )
+            config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(1) + config.OUTPUTS[i+1] + "->" + config.INPUTS[i+1] + "/" + config.VERGLEICH_PINS[i+1][1] )
         else:
             config.FEHLER.append(config.ABSCHLUSSMELDUNGEN.get(6)) # ansonsten passt alles
 

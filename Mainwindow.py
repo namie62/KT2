@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
     def create_textfeld(self):
         self.textEdit = QtWidgets.QTextEdit(self.MainWindow)
         self.textEdit.setText(GUI_config.mainwindow_textanzeige)         
-        self.textEdit.setGeometry(QtCore.QRect(0, 0,GUI_config.mainwindowsize[0], GUI_config.label_size_in_fehleranzeige[1]))
+        self.textEdit.setGeometry(QtCore.QRect(0, 0,GUI_config.mainwindowsize[0], GUI_config.label_size_in_fehleranzeige[1]*2))
 
     def create_pushbuttons(self): #erstellt für jedes Kabel in Kabel.py im Hauptfenster einen Knopf und verschiebt die Knopfposition entsprechend, damit sie nicht direkt übereinander landen
         posy = GUI_config.y_position_knoepfe 

@@ -24,13 +24,13 @@ class Ui_Dialog(QDialog): # Ergebnisfenster ist ein Dialog von PyQt5 und geht au
             #schreibt ein Textfeld für jeden Fehler und variiert die Position vom Label entsprechend
             for i in range(len(config.FEHLER)):
                 if i > 18:
-                    xpos = 250
+                    xpos = 255
                     ypos = (i-19)*GUI_config.label_size_in_fehleranzeige[1]
                 if i > 36:
-                    xpos = 500
+                    xpos = 505
                     ypos = (i-37)*GUI_config.label_size_in_fehleranzeige[1]
                 if i > 54: #wenn mehr als 54 Fehler, dann ist eh mehr kaputt
-                    xpos = 750
+                    xpos = 755
                     ypos = (i-55)*GUI_config.label_size_in_fehleranzeige[1]
                 
                 if config.FEHLER[i] == "Alles supi": #wenn bei einem bestimmten Pin kein Fehler erscheint, dann soll da in der Zeile im Ergebnisfenster auch nichts stehen
@@ -43,7 +43,7 @@ class Ui_Dialog(QDialog): # Ergebnisfenster ist ein Dialog von PyQt5 und geht au
                     ypos  += 1*GUI_config.label_size_in_fehleranzeige[1] # verschiebt die nächste Fehlermeldung dann um 1 nach unten
         else: #wenn kein Fehler, dann zeige Männchen mit Haken
             self.label = QtWidgets.QLabel(dialog)
-            pixmap = QPixmap("Haken.jpg")
+            pixmap = QPixmap("/home/pi/KT2/Haken.jpg")
             self.label.setPixmap(pixmap)
                 
     def checke_ob_fehler_vorhanden(self):
@@ -51,10 +51,10 @@ class Ui_Dialog(QDialog): # Ergebnisfenster ist ein Dialog von PyQt5 und geht au
         #wenn toggle 0 ist, dann trat kein Fehler auf und der Haken wird angezeigt statt der Fehlermeldungen
         self.toggle = 0
         for i in range(len(config.FEHLER)):
+            print(config.FEHLER[i])
             if config.FEHLER[i] != "Alles supi":
                 self.toggle = 1
-            else:
-                self.toggle = 0
+            print(self.toggle)
             
 # die nächsten beiden Methoden werden im Mainwindow aufgerufen, nachdem die Prüfung fertig ist
 def open_dialog(Dialog):
